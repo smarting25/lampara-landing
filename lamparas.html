@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LuminarIA — Ilumina tu espacio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:    #c9a84c;
+      --gold-lt: #e8c97a;
+      --dark:    #111118;
+      --dark2:   #1c1c28;
+      --dark3:   #252535;
+      --light:   #f5f0e8;
+      --text:    #d4cfc6;
+      --radius:  14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(17,17,24,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,.15);
+    }
+    .logo {
+      font-size: 1.5rem; font-weight: 700; color: var(--gold);
+      letter-spacing: .04em; text-decoration: none;
+    }
+    .logo span { color: #fff; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text); text-decoration: none; font-size: .95rem;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold); color: #111; padding: .5rem 1.4rem;
+      border-radius: 50px; font-weight: 600; text-decoration: none;
+      font-size: .9rem; transition: background .25s, transform .2s;
+    }
+    .nav-cta:hover { background: var(--gold-lt); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse 60% 55% at 50% 30%, rgba(201,168,76,.13) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(201,168,76,.06) 0%, transparent 60%),
+        var(--dark);
+      position: relative; overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute; width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,.18) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-55%);
+      pointer-events: none; animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-55%) scale(1); opacity:.8; }
+      50%      { transform: translate(-50%,-55%) scale(1.08); opacity:1; }
+    }
+    .hero-lamp {
+      font-size: 5rem; display: block; margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px rgba(201,168,76,.5));
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+    #hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800;
+      color: #fff; line-height: 1.15; margin-bottom: 1.2rem;
+      position: relative;
+    }
+    #hero h1 em { color: var(--gold); font-style: normal; }
+    #hero p {
+      max-width: 560px; margin: 0 auto 2.5rem;
+      font-size: 1.1rem; color: var(--text); position: relative;
+    }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+    .btn-primary {
+      background: var(--gold); color: #111; padding: .85rem 2.2rem;
+      border-radius: 50px; font-weight: 700; text-decoration: none;
+      font-size: 1rem; transition: all .25s; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,.35); }
+    .btn-outline {
+      background: transparent; color: var(--gold); padding: .85rem 2.2rem;
+      border-radius: 50px; font-weight: 600; text-decoration: none;
+      font-size: 1rem; border: 2px solid var(--gold); transition: all .25s; cursor: pointer;
+    }
+    .btn-outline:hover { background: rgba(201,168,76,.1); transform: translateY(-2px); }
+
+    /* ── SECTIONS SHARED ── */
+    section { padding: 5rem 1.5rem; }
+    .section-label {
+      text-align: center; font-size: .8rem; font-weight: 700;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .6rem;
+    }
+    h2.section-title {
+      text-align: center; font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800; color: #fff; margin-bottom: .8rem;
+    }
+    .section-sub {
+      text-align: center; max-width: 560px; margin: 0 auto 3.5rem;
+      color: var(--text); font-size: 1rem;
+    }
+    .divider {
+      width: 56px; height: 3px; background: var(--gold);
+      border-radius: 2px; margin: 1rem auto 0;
+    }
+
+    /* ── PRODUCTS ── */
+    #productos { background: var(--dark2); }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.8rem; max-width: 1200px; margin: 0 auto;
+    }
+    .card {
+      background: var(--dark3); border-radius: var(--radius);
+      overflow: hidden; border: 1px solid rgba(201,168,76,.12);
+      transition: transform .3s, box-shadow .3s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(201,168,76,.3);
+    }
+    .card-img {
+      width: 100%; aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem;
+      background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+      position: relative; overflow: hidden;
+    }
+    .card-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 40%, rgba(201,168,76,.12), transparent 70%);
+    }
+    .badge {
+      position: absolute; top: .75rem; right: .75rem;
+      background: var(--gold); color: #111; font-size: .72rem; font-weight: 700;
+      padding: .25rem .65rem; border-radius: 50px; letter-spacing: .04em;
+    }
+    .card-body { padding: 1.4rem; }
+    .card-body h3 { color: #fff; font-size: 1.1rem; font-weight: 700; margin-bottom: .4rem; }
+    .card-body p { color: var(--text); font-size: .88rem; margin-bottom: 1rem; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .price { color: var(--gold); font-size: 1.3rem; font-weight: 800; }
+    .add-btn {
+      background: var(--gold); color: #111; border: none; border-radius: 8px;
+      padding: .45rem 1rem; font-size: .85rem; font-weight: 700; cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+    .add-btn:hover { background: var(--gold-lt); transform: scale(1.05); }
+
+    /* ── FEATURES ── */
+    #ventajas { background: var(--dark); }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem; max-width: 900px; margin: 0 auto;
+    }
+    .feature {
+      text-align: center; padding: 2rem 1.5rem;
+      background: var(--dark2); border-radius: var(--radius);
+      border: 1px solid rgba(201,168,76,.1); transition: border-color .3s;
+    }
+    .feature:hover { border-color: rgba(201,168,76,.4); }
+    .feature-icon { font-size: 2.4rem; margin-bottom: 1rem; display: block; }
+    .feature h3 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+    .feature p { font-size: .88rem; color: var(--text); }
+
+    /* ── CONTACT ── */
+    #contacto { background: var(--dark2); }
+    .contact-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; max-width: 1100px; margin: 0 auto; align-items: start;
+    }
+    @media (max-width: 768px) {
+      .contact-wrapper { grid-template-columns: 1fr; }
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .info-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .info-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(201,168,76,.12); display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+      border: 1px solid rgba(201,168,76,.2);
+    }
+    .info-item h4 { color: var(--gold); font-size: .8rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase; margin-bottom: .2rem; }
+    .info-item p, .info-item a {
+      color: var(--text); font-size: .95rem; text-decoration: none;
+    }
+    .info-item a:hover { color: var(--gold); }
+    .social-row { display: flex; gap: .8rem; margin-top: .5rem; }
+    .social-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--dark3); border: 1px solid rgba(201,168,76,.2);
+      color: var(--text); text-decoration: none; padding: .5rem 1rem;
+      border-radius: 8px; font-size: .85rem; transition: all .25s;
+    }
+    .social-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* contact form */
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; }
+    .form-group label { font-size: .82rem; font-weight: 600; color: var(--gold); letter-spacing: .05em; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--dark3); border: 1px solid rgba(201,168,76,.2);
+      color: #fff; border-radius: 10px; padding: .75rem 1rem;
+      font-size: .95rem; font-family: inherit; outline: none;
+      transition: border-color .25s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--gold); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .form-group select option { background: var(--dark3); }
+    .submit-btn {
+      background: var(--gold); color: #111; border: none; border-radius: 10px;
+      padding: .9rem; font-size: 1rem; font-weight: 700; cursor: pointer;
+      transition: all .25s; margin-top: .5rem;
+    }
+    .submit-btn:hover { background: var(--gold-lt); transform: translateY(-2px); }
+    .form-toast {
+      display: none; background: rgba(201,168,76,.15); border: 1px solid var(--gold);
+      border-radius: 10px; padding: .8rem 1rem; text-align: center;
+      color: var(--gold); font-size: .9rem; font-weight: 600;
+    }
+
+    /* ── MAP ── */
+    #ubicacion { background: var(--dark); }
+    .map-container {
+      max-width: 1100px; margin: 0 auto;
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid rgba(201,168,76,.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+    .map-container iframe {
+      display: block; width: 100%; height: 420px; border: none;
+      filter: grayscale(40%) contrast(1.05);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); border-top: 1px solid rgba(201,168,76,.12);
+      text-align: center; padding: 2.5rem 1.5rem;
+    }
+    footer .logo { font-size: 1.3rem; display: inline-block; margin-bottom: .6rem; }
+    footer p { font-size: .85rem; color: #666; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* ── MOBILE NAV ── */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
+    @media (max-width: 640px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        position: fixed; top: 64px; left: 0; right: 0;
+        background: rgba(17,17,24,.97); flex-direction: column;
+        align-items: center; padding: 1.5rem; gap: 1.5rem;
+        transform: translateY(-150%); transition: transform .35s;
+        border-bottom: 1px solid rgba(201,168,76,.15);
+      }
+      .nav-links.open { transform: translateY(0); }
+      .nav-cta { display: none; }
+    }
+
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s, transform .6s; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* toast cart */
+    #cart-toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background: var(--gold); color: #111; padding: .75rem 1.4rem;
+      border-radius: 10px; font-weight: 700; font-size: .95rem;
+      opacity: 0; transform: translateY(20px); transition: all .4s;
+      pointer-events: none; z-index: 200;
+    }
+    #cart-toast.show { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">Luminar<span>IA</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#productos">Productos</a></li>
+    <li><a href="#ventajas">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+    <li><a href="#ubicacion">Ubicación</a></li>
+  </ul>
+  <a class="nav-cta" href="#productos">Ver catálogo</a>
+  <button class="hamburger" id="burger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div>
+    <span class="hero-lamp">🪔</span>
+    <h1>Ilumina tu espacio<br>con <em>estilo único</em></h1>
+    <p>Diseños artesanales y contemporáneos que transforman cualquier ambiente. Calidad premium, luz que inspira.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#productos">Explorar productos</a>
+      <a class="btn-outline" href="#contacto">Consultar ahora</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTOS -->
+<section id="productos">
+  <p class="section-label reveal">Catálogo</p>
+  <h2 class="section-title reveal">Productos destacados</h2>
+  <p class="section-sub reveal">Los 5 más elegidos por nuestros clientes para crear ambientes únicos.</p>
+  <div class="divider reveal" style="margin-bottom:3.5rem"></div>
+
+  <div class="products-grid">
+
+    <div class="card reveal">
+      <div class="card-img">🏮 <span class="badge">Más vendido</span></div>
+      <div class="card-body">
+        <h3>Lámpara Zen Bambú</h3>
+        <p>Pantalla artesanal de bambú natural. Luz cálida y difusa ideal para living o dormitorio.</p>
+        <div class="card-footer">
+          <span class="price">$4.500</span>
+          <button class="add-btn" onclick="addToCart('Lámpara Zen Bambú')">+ Consultar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-img">💡 <span class="badge">Nuevo</span></div>
+      <div class="card-body">
+        <h3>Colgante Industrial</h3>
+        <p>Estilo loft con filamento vintage Edison. Estructura de hierro negro mate, 60 cm de cable textil.</p>
+        <div class="card-footer">
+          <span class="price">$3.200</span>
+          <button class="add-btn" onclick="addToCart('Colgante Industrial')">+ Consultar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-img">🕯️</div>
+      <div class="card-body">
+        <h3>Velador Mármol Blanco</h3>
+        <p>Base de mármol natural de Carrara con pantalla de lino. Elegancia minimalista para tu mesa de noche.</p>
+        <div class="card-footer">
+          <span class="price">$6.800</span>
+          <button class="add-btn" onclick="addToCart('Velador Mármol Blanco')">+ Consultar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-img">🌟 <span class="badge">-20%</span></div>
+      <div class="card-body">
+        <h3>Plafón LED Circular</h3>
+        <p>Luz LED regulable de 3 tonos (fría/neutra/cálida). 36W, cobertura 25 m². Bajo consumo.</p>
+        <div class="card-footer">
+          <span class="price">$2.900</span>
+          <button class="add-btn" onclick="addToCart('Plafón LED Circular')">+ Consultar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card reveal">
+      <div class="card-img">🔦</div>
+      <div class="card-body">
+        <h3>Aplique Exterior Solar</h3>
+        <p>Panel solar integrado, sensor crepuscular y detector de movimiento. IP65, sin cableado.</p>
+        <div class="card-footer">
+          <span class="price">$3.750</span>
+          <button class="add-btn" onclick="addToCart('Aplique Exterior Solar')">+ Consultar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VENTAJAS -->
+<section id="ventajas">
+  <p class="section-label reveal">¿Por qué elegirnos?</p>
+  <h2 class="section-title reveal">Luz con garantía</h2>
+  <div class="divider reveal" style="margin-bottom:3.5rem"></div>
+  <div class="features-grid">
+    <div class="feature reveal">
+      <span class="feature-icon">🏅</span>
+      <h3>Calidad certificada</h3>
+      <p>Materiales seleccionados y garantía de 2 años en todos los productos.</p>
+    </div>
+    <div class="feature reveal">
+      <span class="feature-icon">🚚</span>
+      <h3>Envío a todo el país</h3>
+      <p>Despacho en 24–72 hs. Gratis en compras mayores a $5.000.</p>
+    </div>
+    <div class="feature reveal">
+      <span class="feature-icon">🎨</span>
+      <h3>Diseño personalizado</h3>
+      <p>Adaptamos modelos a tu medida, color y estilo de interior.</p>
+    </div>
+    <div class="feature reveal">
+      <span class="feature-icon">💬</span>
+      <h3>Asesoría gratuita</h3>
+      <p>Te ayudamos a elegir la iluminación ideal para cada espacio.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <p class="section-label reveal">Hablemos</p>
+  <h2 class="section-title reveal">Contacto</h2>
+  <p class="section-sub reveal">Estamos para ayudarte. Escribinos o visitanos en nuestro local.</p>
+  <div class="divider reveal" style="margin-bottom:3.5rem"></div>
+
+  <div class="contact-wrapper">
+
+    <!-- Info -->
+    <div class="contact-info reveal">
+
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <h4>Dirección</h4>
+          <p>Av. Corrientes 1234, Piso 2 — Buenos Aires, Argentina</p>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+          <h4>Teléfono</h4>
+          <a href="tel:+541112345678">+54 11 1234-5678</a>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">✉️</div>
+        <div>
+          <h4>Email</h4>
+          <a href="mailto:hola@luminaria.com.ar">hola@luminaria.com.ar</a>
+        </div>
+      </div>
+
+      <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div>
+          <h4>Horarios</h4>
+          <p>Lun–Vie 9:00–19:00 · Sáb 10:00–15:00</p>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="color:var(--gold);font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem">Redes sociales</h4>
+        <div class="social-row">
+          <a class="social-btn" href="#" aria-label="Instagram">📸 Instagram</a>
+          <a class="social-btn" href="#" aria-label="WhatsApp">💬 WhatsApp</a>
+          <a class="social-btn" href="#" aria-label="Facebook">👍 Facebook</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form class="contact-form reveal" id="contactForm" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" placeholder="Tu nombre" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="tu@email.com" required />
+      </div>
+      <div class="form-group">
+        <label for="asunto">¿Qué te interesa?</label>
+        <select id="asunto">
+          <option value="">Seleccionar...</option>
+          <option>Consulta de producto</option>
+          <option>Pedido personalizado</option>
+          <option>Envíos y costos</option>
+          <option>Garantía y soporte</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" placeholder="Contanos en qué podemos ayudarte..." required></textarea>
+      </div>
+      <button class="submit-btn" type="submit">Enviar consulta ✨</button>
+      <div class="form-toast" id="formToast">¡Gracias! Tu mensaje fue enviado. Te respondemos pronto 🕯️</div>
+    </form>
+
+  </div>
+</section>
+
+<!-- UBICACIÓN -->
+<section id="ubicacion">
+  <p class="section-label reveal">Encontranos</p>
+  <h2 class="section-title reveal">Nuestra ubicación</h2>
+  <p class="section-sub reveal">Visitanos en nuestro showroom y elegí tu lámpara en persona.</p>
+  <div class="divider reveal" style="margin-bottom:3.5rem"></div>
+  <div class="map-container reveal">
+    <iframe
+      title="Mapa LuminarIA"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.9876694741!2d-58.38520508477012!3d-34.60373888045914!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccacb3be94f7b%3A0xc1c4b4b4ac52085c!2sAv.%20Corrientes%201234%2C%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar"
+      allowfullscreen loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a class="logo" href="#">Luminar<span>IA</span></a>
+  <p style="margin-top:.4rem">© 2026 LuminarIA · Todos los derechos reservados · <a href="#contacto">Contacto</a></p>
+</footer>
+
+<!-- CART TOAST -->
+<div id="cart-toast"></div>
+
+<script>
+  // Mobile nav
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Nav shrink on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 50 ? '.6rem 2.5rem' : '1rem 2.5rem';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Cart toast
+  function addToCart(name) {
+    const toast = document.getElementById('cart-toast');
+    toast.textContent = `✅ "${name}" agregado a tu consulta`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+  }
+
+  // Form submit
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const nombre  = document.getElementById('nombre').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const mensaje = document.getElementById('mensaje').value.trim();
+    if (!nombre || !email || !mensaje) {
+      alert('Por favor completá los campos obligatorios.');
+      return;
+    }
+    const toast = document.getElementById('formToast');
+    toast.style.display = 'block';
+    this.reset();
+    setTimeout(() => (toast.style.display = 'none'), 5000);
+  });
+</script>
+</body>
+</html>
